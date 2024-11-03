@@ -1,0 +1,61 @@
+name: "Custom Helm Publish"
+description: "Publish Helm charts to GitHub Pages using customized logic"
+author: "Teegan Krieger"
+inputs:
+  main_branch:
+    description: "The main branch of the repository. Charts packaged on this branch will be tagged with the 'latest' tag."
+    required: false
+    default: main
+  charts_dir:
+    description: "The directory containing the Helm charts."
+    required: false
+    default: charts
+  build_dir:
+    description: "The temporary directory to store packaged Helm charts within. Must be different from 'packages_dir'."
+    required: false
+    default: releases
+  pages_branch:
+    description: "The branch to push the index and artifacts to."
+    required: false
+    default: releases
+  packages_dir:
+    description: "The directory on the 'pages_branch' to store packaged Helm charts within. Must be different from 'build_dir'."
+    required: false
+    default: packages
+  branch_tag_rules:
+    description: ""
+    required: false
+    default: {}
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout Current Branch
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Configure Git
+      run: |
+        git config user.name "$GITHUB_ACTOR"
+        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+    - name: Install Helm
+      uses: azure/setup-helm@v4
+      env:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+    - name: Package Helm Charts
+      run: |
+        "${GITHUB_ACTION_PATH}/package_helm_charts.sh" "${{ inputs.charts_dir }}" "${{ inputs.pages_branch }}" "${{ inputs.branch_tag_rules }}"
+
+    - name: Checkout Pages Branch
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        ref: releases
+        clean: false
+
+    - name: Release Helm Charts
+      run: |
+        "${GITHUB_ACTION_PATH}/release_helm_charts.sh" "${{ "refs/heads/${{ inputs.main_branch }}" == github.ref }}" "${{ inputs.build_dir }}" "${{ inputs.packages_dir }}"
