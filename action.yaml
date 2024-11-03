@@ -25,7 +25,8 @@ inputs:
   branch_tag_rules:
     description: ""
     required: false
-    default: {}
+    default: ""
+  
 
 runs:
   using: composite
@@ -36,16 +37,16 @@ runs:
         fetch-depth: 0
 
     - name: Configure Git
+      shell: bash
       run: |
         git config user.name "$GITHUB_ACTOR"
         git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
     - name: Install Helm
       uses: azure/setup-helm@v4
-      env:
-        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
     - name: Package Helm Charts
+      shell: bash
       run: |
         "${GITHUB_ACTION_PATH}/package_helm_charts.sh" "${{ inputs.charts_dir }}" "${{ inputs.pages_branch }}" "${{ inputs.branch_tag_rules }}"
 
@@ -57,5 +58,6 @@ runs:
         clean: false
 
     - name: Release Helm Charts
+      shell: bash
       run: |
-        "${GITHUB_ACTION_PATH}/release_helm_charts.sh" "${{ "refs/heads/${{ inputs.main_branch }}" == github.ref }}" "${{ inputs.build_dir }}" "${{ inputs.packages_dir }}"
+        "${GITHUB_ACTION_PATH}/release_helm_charts.sh" "${{ "refs/heads/{{ inputs.main_branch }}" == github.ref }}" "${{ inputs.build_dir }}" "${{ inputs.packages_dir }}"
