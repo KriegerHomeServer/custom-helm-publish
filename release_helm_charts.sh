@@ -40,7 +40,7 @@ function release_single_chart() {
         "create")
             echo "Creating release for chart '${chart_name}' version '${chart_version}'...";
 
-            if [ "${INPUTS_MARK_LATEST}" == "true" ]; then
+            if [ "${INPUTS_MARK_LATEST}" == true ]; then
                 
                 gh release create "${chart_name}-${chart_version}" "${existing_chart_file}" --notes "${chart_description}" --latest;
 
@@ -52,11 +52,11 @@ function release_single_chart() {
             ;;
 
         "update")
-            echo "Updating release for chart '${current_chart_name}' version '${current_chart_version}'...";
+            echo "Updating release for chart '${chart_name}' version '${chart_version}'...";
 
             if ! gh release view "${chart_name}-${chart_version}"; then
 
-                if [ "${INPUTS_MARK_LATEST}" == "true" ]; then
+                if [ "${INPUTS_MARK_LATEST}" == true ]; then
                 
                     gh release create "${chart_name}-${chart_version}" "${existing_chart_file}" --notes "${chart_description}" --latest;
 
@@ -76,7 +76,7 @@ function release_single_chart() {
             ;;
 
         "none")
-            echo "No action required for chart '${current_chart_name}' version '${current_chart_version}'...";
+            echo "No action required for chart '${chart_name}' version '${chart_version}'...";
             ;;
 
     esac
