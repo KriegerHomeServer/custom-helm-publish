@@ -60,4 +60,4 @@ runs:
     - name: Release Helm Charts
       shell: bash
       run: |
-        "${GITHUB_ACTION_PATH}/release_helm_charts.sh" "${{ "refs/heads/{{ inputs.main_branch }}" == github.ref }}" "${{ inputs.build_dir }}" "${{ inputs.packages_dir }}"
+        "${GITHUB_ACTION_PATH}/release_helm_charts.sh" "${{ github.ref == format('refs/heads/{0}', inputs.main_branch) }}" "${{ inputs.build_dir }}" "${{ inputs.packages_dir }}"
