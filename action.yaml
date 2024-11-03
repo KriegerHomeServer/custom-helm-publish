@@ -48,7 +48,7 @@ runs:
     - name: Package Helm Charts
       shell: bash
       run: |
-        "${GITHUB_ACTION_PATH}/package_helm_charts.sh" "${{ inputs.charts_dir }}" "${{ inputs.pages_branch }}" "${{ inputs.branch_tag_rules }}"
+        "${GITHUB_ACTION_PATH}/package_helm_charts.sh" "${{ inputs.charts_dir }}" "${{ inputs.build_dir }}" "${{ inputs.branch_tag_rules }}"
 
     - name: Checkout Pages Branch
       uses: actions/checkout@v4

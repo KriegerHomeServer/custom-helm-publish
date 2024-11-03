@@ -72,13 +72,17 @@ function update_index() {
     
     helm repo index ${INPUTS_PACKAGES_DIR};
 
-    yq 'with(.entries.*.[]; .urls = ["https://github.com/KriegerHomeServer/helm-charts-development/releases/download/" + .name + "-" + .version + "/" + .name + "-" + .version + ".tgz"])' releases/index.yaml;
+    yq 'with(.entries.*.[]; .urls = ["https://github.com/KriegerHomeServer/helm-charts-development/releases/download/" + .name + "-" + .version + "/" + .name + "-" + .version + ".tgz"])' "${INPUTS_PACKAGES_DIR}/index.yaml";
+
+    mv "${INPUTS_PACKAGES_DIR}/index.yaml" "index.yaml";
 
 }
 
 function commit_changes() {
     
     git add "${INPUTS_PACKAGES_DIR}";
+
+    git add "index.yaml";
 
     if git commit -m "Workflow updated Helm chart releases"; then
 
