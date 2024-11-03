@@ -72,9 +72,9 @@ function update_index() {
     
     helm repo index ${INPUTS_PACKAGES_DIR};
 
-    yq 'with(.entries.*.[]; .urls = ["https://github.com/KriegerHomeServer/helm-charts-development/releases/download/" + .name + "-" + .version + "/" + .name + "-" + .version + ".tgz"])' "${INPUTS_PACKAGES_DIR}/index.yaml";
+    yq 'with(.entries.*.[]; .urls = ["https://github.com/KriegerHomeServer/helm-charts-development/releases/download/" + .name + "-" + .version + "/" + .name + "-" + .version + ".tgz"])' "${INPUTS_PACKAGES_DIR}/index.yaml" > "index.yaml";
 
-    mv "${INPUTS_PACKAGES_DIR}/index.yaml" "index.yaml";
+    rm "${INPUTS_PACKAGES_DIR}/index.yaml";
 
 }
 
