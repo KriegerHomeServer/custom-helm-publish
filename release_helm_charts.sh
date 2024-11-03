@@ -90,6 +90,8 @@ function commit_changes() {
 
 function main() {
 
+    mkdir -p ${INPUTS_PACKAGES_DIR};
+
     for CHART in ` find . -maxdepth 2 -type f -regex "./${INPUTS_BUILD_DIR}/.*\.tgz" `; do
 
         release_single_chart ${CHART};
