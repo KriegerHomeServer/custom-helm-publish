@@ -54,10 +54,25 @@ function release_single_chart() {
         "update")
             echo "Updating release for chart '${current_chart_name}' version '${current_chart_version}'...";
 
-            gh release edit "${chart_name}-${chart_version}" --notes "${chart_description}"
+            if ! gh release view "${chart_name}-${chart_version}"; then
 
-            gh release upload "${chart_name}-${chart_version}" "${existing_chart_file}" --clobber;
+                if [ "${INPUTS_MARK_LATEST}" == "true" ]; then
+                
+                    gh release create "${chart_name}-${chart_version}" "${existing_chart_file}" --notes "${chart_description}" --latest;
 
+                else
+
+                    gh release create "${chart_name}-${chart_version}" "${existing_chart_file}" --notes "${chart_description}" --prerelease;
+
+                fi
+
+            else
+
+                gh release edit "${chart_name}-${chart_version}" --notes "${chart_description}"
+
+                gh release upload "${chart_name}-${chart_version}" "${existing_chart_file}" --clobber;
+
+            fi
             ;;
 
         "none")
